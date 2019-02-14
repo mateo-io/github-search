@@ -1,12 +1,14 @@
 import * as colors from './colors'
 import styled from '@emotion/styled'
 
+const MARGIN_TOP_LANDING_BOX = '50px'
+
 /**
  * LAYOUT
  */
 export const RootWrapper = styled.div`
-  height: 100%;
   background: ${colors.primary};
+  padding-top: ${MARGIN_TOP_LANDING_BOX};
 `
 
 export const Wrapper = styled.div`
@@ -14,14 +16,13 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   text-align: center;
   margin-bottom: -50px;
-  height: 100%;
+  min-height: calc(100vh - ${MARGIN_TOP_LANDING_BOX});
+  height: auto;
 `
 
 export const Background = styled.div`
   background: ${colors.white};
   min-height: 85%;
-  top: 50px;
-  position: relative;
   border-radius: 4px;
 `
 /**
@@ -50,10 +51,8 @@ export const SearchInput = styled.input`
 
 export const UsersWrapper = styled.div`
   margin-top: 30px;
-  min-height: 60%;
-  max-height: 60%;
-  overflow-y: scroll;
-  overflow-x: none;
+  min-height: 720px;
+  overflow: hidden;
 `
 
 /**
@@ -67,8 +66,8 @@ export const UsersWrapper = styled.div`
  */
 
 export const Box = styled.div`
-  flex: 0 1 30%;
-  font-size: 18px;
+  flex: 0 1 33%;
+  font-size: 14px;
 `
 /**
  * END FELX AND BOXES

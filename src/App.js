@@ -19,13 +19,13 @@ import UserComponent from './UserComponent'
 
 // constants -> if too big move them to another file
 const GITHUB_URL = 'https://api.github.com'
-const PAGE_ITEM_LIMIT = 10
+const PAGE_ITEM_LIMIT = 8
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
 
-    // debounce the function so we avoid those pesky rate limits
+    // throttle the function so we avoid those pesky rate limits
     this.handleSearchInputChange = debounce(
       this.handleSearchInputChange.bind(this),
       1000
@@ -39,11 +39,16 @@ export default class App extends React.Component {
     }
   }
 
+  componentDidCatch(err) {
+    console.error(`App failed with error:${err}`)
+    alert("I was given this important task and I failed. I'm sorrry")
+  }
+
   // keep event handler separate from the actual fetching fn's
   handleSearchInputChange(value) {
     // err handling
     if (!value) {
-      console.log(`handleSearchInputChange received an invalid  value`)
+      console.log(`App.handleSearchInputChange() received an invalid  value`)
       return
     }
 
@@ -54,7 +59,7 @@ export default class App extends React.Component {
   async fetchUsers(userQuery) {
     // err handling
     if (!userQuery) {
-      console.log(`fetchUsers received an invalid userQueryh`)
+      console.log(`App.fetchUsers(${userQuery}) received an invalid userQuery`)
       return
     }
 
@@ -71,21 +76,46 @@ export default class App extends React.Component {
         .then(res => res.json())
         .catch(err => err)
     } catch (err) {
-      console.error(`fetchUsers(${userQuery}) failed with err:${err}`)
+      console.error(`App.fetchUsers(${userQuery}) failed with err:${err}`)
       return
     }
 
     const { items, total_count } = githubUsersResponse
 
     this.setState({ userResults: items, totalCount: total_count })
+  }
 
-    console.log(`users response length${items.length}`)
-    console.log(`first user:${JSON.stringify(items[0])}`)
+  renderHeader(userResults, totalCount) {
+    return (
+      <React.Fragment>
+        <h1
+          style={{
+            marginTop: '0',
+            top: '30px',
+            position: 'relative',
+            color: colors['white']
+          }}
+        >
+          Github Search V3 Implementation
+        </h1>
+        <SearchInput
+          placeholder='mateo-io...'
+          onChange={e => this.handleSearchInputChange(e.target.value)}
+        />
+        <div style={{ textAlign: 'left', margin: '0 60px' }}>
+          {userResults && userResults.length > 0 && (
+            <h2>
+              Displaying {userResults.length} results out of {totalCount}
+            </h2>
+          )}
+        </div>
+      </React.Fragment>
+    )
   }
 
   renderPaginationControls() {
     const { userResults, paginationIndex } = this.state
-    if (userResults.length == 0) {
+    if (userResults.length === 0) {
       return null
     }
 
@@ -100,7 +130,7 @@ export default class App extends React.Component {
     `
 
     return (
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', padding: '40px 0' }}>
         <PaginationBox
           onClick={() =>
             this.setState({ paginationIndex: Math.max(paginationIndex - 1, 0) })
@@ -108,15 +138,22 @@ export default class App extends React.Component {
         >
           {paginationIndex > 0 ? '<' : ''}
         </PaginationBox>
-        <Box>{paginationIndex + 1}</Box>
+        <Box>
+          <p>
+            <b>{paginationIndex + 1}</b>
+          </p>
+        </Box>
         <PaginationBox
           onClick={() =>
             this.setState({
-              paginationIndex: Math.min(paginationIndex + 1, paginationLimit)
+              paginationIndex: Math.min(
+                paginationIndex + 1,
+                paginationLimit - 1
+              )
             })
           }
         >
-          {'>'}
+          {paginationIndex < paginationLimit - 1 ? '>' : ''}
         </PaginationBox>
       </div>
     )
@@ -128,27 +165,7 @@ export default class App extends React.Component {
       <RootWrapper>
         <Wrapper>
           <Background>
-            <h1
-              style={{
-                marginTop: '0',
-                top: '40px',
-                position: 'relative',
-                color: colors['white']
-              }}
-            >
-              Github Search V3 Implementation
-            </h1>
-            <SearchInput
-              placeholder='mateo-io...'
-              onChange={e => this.handleSearchInputChange(e.target.value)}
-            />
-            <div style={{ textAlign: 'left', margin: '60px' }}>
-              {userResults.length > 0 && (
-                <h2>
-                  Displaying {userResults.length} results out of {totalCount}
-                </h2>
-              )}
-            </div>
+            {this.renderHeader(userResults, totalCount)}
             <UsersWrapper>
               {userResults &&
                 userResults
