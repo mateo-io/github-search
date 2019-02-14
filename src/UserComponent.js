@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 
 // local components
 import { Box } from './components'
+import * as colors from './colors'
 
 export default class UserComponent extends React.PureComponent {
   constructor(props) {
@@ -41,19 +42,19 @@ export default class UserComponent extends React.PureComponent {
         </Box>
         <Box>
           <BoldP>{name}</BoldP>
-          <p>{login}</p>
+          <P>{login}</P>
         </Box>
         <Box>
           <BoldP>{location}</BoldP>
-          <p>LOCATION</p>
+          <P>LOCATION</P>
         </Box>
         <Box>
           <BoldP>{followers}</BoldP>
-          <p>FOLLOWERS</p>
+          <P>FOLLOWERS</P>
         </Box>
         <Box>
           <BoldP>{following}</BoldP>
-          <p>FOLLOWING</p>
+          <P>FOLLOWING</P>
         </Box>
       </Wrapper>
     )
@@ -62,7 +63,7 @@ export default class UserComponent extends React.PureComponent {
 
 const Wrapper = styled.div`
   height: 80px;
-  margin: 8px;
+  margin: 12px;
   width: 100%;
   display: flex;
   overflow: none;
@@ -73,9 +74,17 @@ const Wrapper = styled.div`
   }
 `
 
+const P = styled.p`
+  margin-top: 8px;
+  font-weight: 500;
+  color: ${colors.black};
+  font-size: 13px;
+`
+
 const BoldP = styled.div`
+  color: ${colors.primary};
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 500;
 `
 
 const Img = styled.img`
