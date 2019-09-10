@@ -32,6 +32,7 @@ export default class UserComponent extends React.PureComponent {
     this.setState({ ...userData })
   }
 
+  // my boy
   render() {
     const { avatar_url, login, url } = this.props
     const { followers, following, name, location } = this.state
